@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -19,20 +20,16 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         Button button;
-        TextView textView2 = (TextView) findViewById(R.id.textView2);
         Intent intent = getIntent();
         final ListView mainList;
         //ArrayAdapter<String> listAdapter;
-        mainList = (ListView) findViewById(R.id.uuslist);
+        mainList = findViewById(R.id.uuslist);
         ArrayList<String> places_empty = new ArrayList<>();
         //listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
         //.setAdapter(listAdapter);
         String name = intent.getStringExtra("cool_places");
-        System.out.println("asi: " + name.toString());
-        ArrayList cool_places = new ArrayList();
-        for (int i = 0; i < name.split(",").length; i++) {
-            places_empty.add(name.split(",")[i].toString());
-        }
+        System.out.println("asi: " + name);
+        places_empty.addAll(Arrays.asList(name.split(",")));
 
         final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
         mainList.setAdapter(listAdapter);

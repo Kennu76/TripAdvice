@@ -17,25 +17,24 @@ import java.util.ArrayList;
  */
 
 public class GreetActivity extends AppCompatActivity {
-    EditText editText2;
     Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greet);
-        TextView textView2 = (TextView) findViewById(R.id.textView2);
+        TextView textView2 = findViewById(R.id.textView2);
         Intent intent = getIntent();
         final ListView mainList;
         final ArrayAdapter<String> listAdapter;
-        mainList = (ListView) findViewById(R.id.mainList);
+        mainList = findViewById(R.id.mainList);
         ArrayList places_empty = null;
         listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
         mainList.setAdapter(listAdapter);
         String name = intent.getStringExtra("cool_places");
         ArrayList cool_places = new ArrayList();
         for (int i = 0; i < name.split(",").length; i++) {
-            listAdapter.add(name.split(",")[0].toString());
+            listAdapter.add(name.split(",")[0]);
         }
 
         int requestCode = 1;

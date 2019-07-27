@@ -41,7 +41,6 @@ import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity {
     Button btnOk;
-    Button btn2;
     private int REQUEST_CODE = 1;
 
     @Override
@@ -57,81 +56,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initInstance() {
-        final ListView mainList;
-        EditText editText;
-        final ArrayAdapter<String> listAdapter;
-        mainList = (ListView) findViewById(R.id.mainList);
-        editText = (EditText) findViewById(R.id.editText);
-        btnOk = (Button) findViewById(R.id.btnOk);
-        ArrayList places_empty = null;
-        //listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
-        //mainList.setAdapter(listAdapter);
+        btnOk = findViewById(R.id.btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
-            EditText editText = (EditText) findViewById(R.id.editText);
+            EditText editText = findViewById(R.id.editText);
 
             @Override
             public void onClick(View v) {
-
-                String name = editText.getText().toString();
-
-                //intent.putExtra("Name",name);
-
-                //startActivityForResult(intent,REQUEST_CODE);
                 disableSslVerification();
-                ArrayList<String> countries = new ArrayList<String>();
+                String url = "http://partners.api.skyscanner.net/apiservices/browseroutes/v1.0/US" +
+                        "/EUR/en-GB/TLL/anywhere/anytime/anytime?apiKey=prtl6749387986743898559646983194";
+                URL obj;
+                HttpURLConnection con = null;
 
-
-                String url = "http://partners.api.skyscanner.net/apiservices/browseroutes/v1.0/US/EUR/en-GB/TLL/anywhere/anytime/anytime?apiKey=prtl6749387986743898559646983194";
-                URL obj = null;
                 try {
                     obj = new URL(url);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                HttpURLConnection con = null;
-                try {
                     con = (HttpURLConnection) obj.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                // optional default is GET
-                try {
                     con.setRequestMethod("GET");
-                } catch (ProtocolException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 con.setRequestProperty("Accept", "application/json");
 
                 //add request header
-
-                int responseCode = 0;
-                try {
-                    responseCode = con.getResponseCode();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("\nSending 'GET' request to URL : " + url);
-                System.out.println("Response Code : " + responseCode);
-
                 BufferedReader in = null;
+                StringBuffer response = new StringBuffer();
+                String inputLine;
                 try {
                     in = new BufferedReader(
                             new InputStreamReader(con.getInputStream()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-
-                try {
                     while ((inputLine = in.readLine()) != null) {
                         response.append(inputLine);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
                     in.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -139,27 +94,14 @@ public class MainActivity extends AppCompatActivity {
 
                 //print result
                 String response_string = response.toString();
-                JSONObject json = null;
-                try {
-                    json = new JSONObject(response_string.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                JSONObject json;
                 JSONArray quotes = null;
-                try {
-                    quotes = (JSONArray) json.get("Quotes");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 JSONArray places = null;
                 try {
+                    json = new JSONObject(response_string);
+                    quotes = (JSONArray) json.get("Quotes");
                     places = (JSONArray) json.get("Places");
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    System.out.println("proov");
-                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 int budget = Integer.parseInt(editText.getText().toString());
@@ -232,18 +174,11 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
-                //for(int i=0;i<cool_places.size();i++){
-                //    System.out.println(quotes.get((Integer) cool_places.get(i)).toString());
-                //}
-                //String quote = (String) quotes.get(1);
-                //System.out.println(Integer.parseInt(quotes.get(4).toString().split("DestinationId")[1].split("}")[0].split(":")[1]));
                 try {
                     System.out.println(quotes.get(4).toString().split("MinPrice")[1]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                List cool_places2 = (List) cool_places;
-                //cool_places2 = (List) cool_places2.stream().distinct().collect(Collectors.toList());
                 System.out.println("Lahedad kohad: " + cool_places.toString());
                 Log.v("COOLPLACES: ", cool_places.toString());
                 StringBuffer coolplaces = new StringBuffer();
@@ -318,44 +253,6 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void main(String[] args) throws JSONException {
         //launch(args);
-    }
-
-
-    private static void disableSslVerification() {
-        try {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
-
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
-            }
-            };
-
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
     }
 
 }
