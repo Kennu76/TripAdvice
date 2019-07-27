@@ -2,24 +2,21 @@ package com.example.kennu76.tripadvice;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,8 +37,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -60,17 +55,18 @@ public class MainActivity extends AppCompatActivity {
         initInstance();
 
     }
-    public void initInstance(){
-        final ListView mainList ;
+
+    public void initInstance() {
+        final ListView mainList;
         EditText editText;
         final ArrayAdapter<String> listAdapter;
-        mainList = (ListView) findViewById( R.id.mainList);
+        mainList = (ListView) findViewById(R.id.mainList);
         editText = (EditText) findViewById(R.id.editText);
         btnOk = (Button) findViewById(R.id.btnOk);
         ArrayList places_empty = null;
         //listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
         //mainList.setAdapter(listAdapter);
-        btnOk.setOnClickListener(new View.OnClickListener(){
+        btnOk.setOnClickListener(new View.OnClickListener() {
             EditText editText = (EditText) findViewById(R.id.editText);
 
             @Override
@@ -83,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 //startActivityForResult(intent,REQUEST_CODE);
                 disableSslVerification();
                 ArrayList<String> countries = new ArrayList<String>();
-
-
 
 
                 String url = "http://partners.api.skyscanner.net/apiservices/browseroutes/v1.0/US/EUR/en-GB/TLL/anywhere/anytime/anytime?apiKey=prtl6749387986743898559646983194";
@@ -107,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (ProtocolException e) {
                     e.printStackTrace();
                 }
-                con.setRequestProperty("Accept","application/json");
+                con.setRequestProperty("Accept", "application/json");
 
                 //add request header
 
@@ -173,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList place_name = new ArrayList();
                 int y = places.length();
                 String lastel = new String();
-                for(int i=0;i<y;i++){
+                for (int i = 0; i < y; i++) {
                     int place_id_one = 0;
                     try {
                         place_id_one = Integer.parseInt(places.get(i).toString().split(",")[0].split(":")[1]);
@@ -184,13 +178,11 @@ public class MainActivity extends AppCompatActivity {
                     String place_name_one = null;
 
                     try {
-                        if(places.get(i).toString().split(",").length < 5) {
+                        if (places.get(i).toString().split(",").length < 5) {
                             place_name_one = places.get(i).toString().split(",")[0].split(":")[1];
                             place_name_one = place_name_one.replace("\"", "");
                             place_name_one = place_name_one.replace("}", "");
-                        }
-                        else
-                        {
+                        } else {
                             place_name_one = places.get(i).toString().split(",")[7].split(":")[1];
                             place_name_one = place_name_one.replace("\"", "");
                             place_name_one = place_name_one.replace("}", "");
@@ -201,23 +193,22 @@ public class MainActivity extends AppCompatActivity {
                     place_name.add(place_name_one);
 
 
-
                 }
                 try {
-                    System.out.println( places.get(180).toString().split(",")[5]);
+                    System.out.println(places.get(180).toString().split(",")[5]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 ArrayList cool_places = new ArrayList();
                 int x = quotes.length();
-                for(int i=0;i<x;i++){
+                for (int i = 0; i < x; i++) {
                     int quote = 0;
                     try {
                         quote = Integer.parseInt(quotes.get(i).toString().split("MinPrice")[1].split(",")[0].split(":")[1]);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    if (quote < budget){
+                    if (quote < budget) {
                         //cool_places.add(i);
                         try {
                             System.out.println(quotes.get(i).toString());
@@ -232,10 +223,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         int koha_id = place_id.indexOf(dest_id);
                         //System.out.println(place_name.get(koha_id));
-                        if((lastel).equals(place_name.get(koha_id))){
+                        if ((lastel).equals(place_name.get(koha_id))) {
 
-                        }
-                        else{
+                        } else {
                             cool_places.add(place_name.get(koha_id));
                         }
                         lastel = (String) place_name.get(koha_id);
@@ -257,33 +247,33 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Lahedad kohad: " + cool_places.toString());
                 Log.v("COOLPLACES: ", cool_places.toString());
                 StringBuffer coolplaces = new StringBuffer();
-                
+
                 //Toast.makeText(getApplicationContext(),cool_places.toString(), Toast.LENGTH_LONG).show();
-                for(int i=0;i< cool_places.size() ;i++){
+                for (int i = 0; i < cool_places.size(); i++) {
                     coolplaces.append((String) cool_places.get(i));
                     coolplaces.append(",");
                     //listAdapter.add((String) cool_places.get(i));
                 }
                 String coolplaces2 = coolplaces.toString();
-                Intent intent = new Intent(getApplicationContext(),ListActivity.class);
-                intent.putExtra("cool_places",coolplaces2);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("cool_places", coolplaces2);
                 //ArrayList routes = new ArrayList();
 
-                startActivityForResult(intent,REQUEST_CODE);
+                startActivityForResult(intent, REQUEST_CODE);
             }
 
 
-
             private void disableSslVerification() {
-                try
-                {
+                try {
                     // Create a trust manager that does not validate certificate chains
-                    TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                             return null;
                         }
+
                         public void checkClientTrusted(X509Certificate[] certs, String authType) {
                         }
+
                         public void checkServerTrusted(X509Certificate[] certs, String authType) {
                         }
                     }
@@ -311,20 +301,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-
-
-
-
         });
     }
 
 
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-        if (requestCode==REQUEST_CODE){
-            if(resultCode==RESULT_OK){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 String result = data.getStringExtra("Name");
-                Toast.makeText(getApplicationContext(),"Your email has been sent "+ result, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Your email has been sent " + result, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -336,15 +322,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static void disableSslVerification() {
-        try
-        {
+        try {
             // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
+
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
                 }
+
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
                 }
             }

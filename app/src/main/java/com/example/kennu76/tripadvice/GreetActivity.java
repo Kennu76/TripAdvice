@@ -26,15 +26,15 @@ public class GreetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_greet);
         TextView textView2 = (TextView) findViewById(R.id.textView2);
         Intent intent = getIntent();
-        final ListView mainList ;
+        final ListView mainList;
         final ArrayAdapter<String> listAdapter;
-        mainList = (ListView) findViewById( R.id.mainList);
+        mainList = (ListView) findViewById(R.id.mainList);
         ArrayList places_empty = null;
         listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
         mainList.setAdapter(listAdapter);
         String name = intent.getStringExtra("cool_places");
         ArrayList cool_places = new ArrayList();
-        for(int i=0;i< name.split(",").length ;i++){
+        for (int i = 0; i < name.split(",").length; i++) {
             listAdapter.add(name.split(",")[0].toString());
         }
 
@@ -45,21 +45,21 @@ public class GreetActivity extends AppCompatActivity {
         final int finalRequestCode = requestCode;
         button = (Button) findViewById(R.id.button);
 
-        button.setOnClickListener(new View.OnClickListener(){
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-                public void onClick(View v) {
+            public void onClick(View v) {
                 Intent intent = getIntent();
                 EditText editText2 = (EditText) findViewById(R.id.editText2);
                 String email = editText2.getText().toString();
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 String[] to = new String[]{email};
-                emailIntent.putExtra(Intent.EXTRA_EMAIL,to);
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT,"App Message");
-                emailIntent.putExtra(Intent.EXTRA_TEXT,"Greetings from my awesome app!");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "App Message");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Greetings from my awesome app!");
                 emailIntent.setType("message/rfc822");
-                startActivity(Intent.createChooser(emailIntent,"Email"));
+                startActivity(Intent.createChooser(emailIntent, "Email"));
 
-                setResult(RESULT_OK,intent);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
