@@ -1,4 +1,4 @@
-package com.example.kennu76.tripadvice;
+package com.example.kennu76.tripadvice.activities;
 
 import android.content.Intent;
 import android.os.Build;
@@ -8,11 +8,12 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
+
+import com.example.kennu76.tripadvice.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,14 +23,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -47,18 +45,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         initInstance();
 
     }
 
     public void initInstance() {
-        btnOk = findViewById(R.id.btnOk);
+        btnOk = findViewById(R.id.searchButton);
         btnOk.setOnClickListener(new View.OnClickListener() {
-            EditText editText = findViewById(R.id.editText);
+            EditText editTravelSum = findViewById(R.id.editTravelSum);
+            SearchView searchView = findViewById(R.id.destinationSearch);
 
             @Override
             public void onClick(View v) {
@@ -78,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
                 con.setRequestProperty("Accept", "application/json");
 
                 //add request header
-                BufferedReader in = null;
-                StringBuffer response = new StringBuffer();
+                BufferedReader in;
+                StringBuilder response = new StringBuilder();
                 String inputLine;
                 try {
                     in = new BufferedReader(
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                int budget = Integer.parseInt(editText.getText().toString());
+                int budget = Integer.parseInt(editTravelSum.getText().toString());
                 ArrayList place_id = new ArrayList();
                 ArrayList place_name = new ArrayList();
                 int y = places.length();

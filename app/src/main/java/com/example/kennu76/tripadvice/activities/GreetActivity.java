@@ -1,4 +1,4 @@
-package com.example.kennu76.tripadvice;
+package com.example.kennu76.tripadvice.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,35 +10,41 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.example.kennu76.tripadvice.R;
 
-public class ListActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+/**
+ * Created by Kennu76 on 28.01.2017.
+ */
+
+public class GreetActivity extends AppCompatActivity {
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        Button button;
+        setContentView(R.layout.activity_greet);
+        TextView textView2 = findViewById(R.id.textView2);
         Intent intent = getIntent();
         final ListView mainList;
-        //ArrayAdapter<String> listAdapter;
-        mainList = findViewById(R.id.uuslist);
-        ArrayList<String> places_empty = new ArrayList<>();
-        //listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
-        //.setAdapter(listAdapter);
-        String name = intent.getStringExtra("cool_places");
-        System.out.println("asi: " + name);
-        places_empty.addAll(Arrays.asList(name.split(",")));
-
-        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
+        final ArrayAdapter<String> listAdapter;
+        mainList = findViewById(R.id.mainList);
+        ArrayList places_empty = null;
+        listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, places_empty);
         mainList.setAdapter(listAdapter);
+        String name = intent.getStringExtra("cool_places");
+        ArrayList cool_places = new ArrayList();
+        for (int i = 0; i < name.split(",").length; i++) {
+            listAdapter.add(name.split(",")[0]);
+        }
+
         int requestCode = 1;
-        //textView2.setText("Thanks for the name " + name + " !");
+        textView2.setText("Thanks for the name " + name + " !");
 
 
         final int finalRequestCode = requestCode;
-        button = (Button) findViewById(R.id.button2);
+        button = (Button) findViewById(R.id.button);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,5 +64,6 @@ public class ListActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 }
